@@ -32,7 +32,7 @@ class AppsConfig(RootModel[Dict[str, AppEntry]]):
     @classmethod
     def from_dict(cls, data: Dict[str, Dict[str, str]]) -> "AppsConfig":
         """Create AppsConfig from raw dictionary data."""
-        apps = {k: AppEntry(**v) for k, v in data.items()}
+        apps = {k: AppEntry(oauth_token=v['oauth_token']) for k, v in data.items()}
         return cls(root=apps)
 
     def get_first_oauth_token(self) -> str:
@@ -113,7 +113,7 @@ async def fetch_copilot_token(oauth_token: str) -> CopilotToken:
     base_headers = get_base_headers()
     headers = {
         "Authorization": f"Bearer {oauth_token}",
-        **base_headers,
+        **get_base_headers(),
     }
 
     async with httpx.AsyncClient() as client:
@@ -155,7 +155,7 @@ async def test_token(token: str) -> bool:
     headers = {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json",
-        **base_headers,
+        **get_base_headers(),
     }
 
     async with httpx.AsyncClient() as client:

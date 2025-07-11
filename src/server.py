@@ -105,7 +105,7 @@ async def create_message(
             logger.debug(f"Using Anthropic API key for model: {request.model}")
 
         # For OpenAI models - modify request format to work with limitations
-        if "openai" in litellm_request["model"] and "messages" in litellm_request:
+        if "openai" in str(litellm_request["model"]) and "messages" in litellm_request:
             logger.debug(f"Processing OpenAI model request: {litellm_request['model']}")
 
             # For OpenAI models, we need to convert content blocks to simple strings
@@ -307,7 +307,7 @@ async def create_message(
                 "POST",
                 raw_request.url.path,
                 display_model,
-                litellm_request.get("model"),
+                str(litellm_request["model"]),
                 len(litellm_request["messages"]),
                 num_tools,
                 200,  # Assuming success at this point
@@ -339,7 +339,7 @@ async def create_message(
                 "POST",
                 raw_request.url.path,
                 display_model,
-                litellm_request.get("model"),
+                str(litellm_request["model"]),
                 len(litellm_request["messages"]),
                 num_tools,
                 200,  # Assuming success at this point
@@ -446,7 +446,7 @@ async def count_tokens(request: TokenCountRequest, raw_request: Request):
                 "POST",
                 raw_request.url.path,
                 display_model,
-                converted_request.get("model"),
+                str(converted_request["model"]),
                 len(converted_request["messages"]),
                 num_tools,
                 200,  # Assuming success at this point
@@ -454,7 +454,7 @@ async def count_tokens(request: TokenCountRequest, raw_request: Request):
 
             # Count tokens
             token_count = token_counter(
-                model=converted_request["model"],
+                model=str(converted_request["model"]),
                 messages=converted_request["messages"],
             )
 
